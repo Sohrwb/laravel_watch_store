@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,6 +36,17 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'ثبت‌نام با موفقیت انجام شد. لطفاً وارد شوید.');
     }
+
+    // نمایش پروفایل
+
+    public function profile()
+    {
+        $cartItems = CartItem::where('user_id', Auth::user()->id)
+            ->whereNull('invoice_id')
+            ->get();
+        return view('profile', compact('cartItems'));
+    }
+
 
     // نمایش فرم ورود
     public function showLoginForm()

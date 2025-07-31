@@ -83,12 +83,21 @@
                             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
                         <div class="relative p-2">
+                            @php
+                                $userId = Auth::id();
 
-                            <a style="all: unset; cursor: pointer;" href="#">
+                                $cartCount = DB::table('cart_items')
+                                    ->where('user_id', $userId)
+                                    ->whereNull('invoice_id')
+                                    ->sum('count');
+
+                            @endphp
+                            <a style="all: unset; cursor: pointer;" href="{{ route('profile') }}">
                                 <i class="fas fa-shopping-cart text-xl text-gray-700"></i>
-                                @if (1 > 0)
-                                    <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded bg-danger px-1">
-                                        {{ 5 }}
+                                @if ($cartCount > 0)
+                                    <span
+                                        class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded bg-danger px-1">
+                                        {{ $cartCount }}
                                     </span>
                                 @endif
                             </a>
