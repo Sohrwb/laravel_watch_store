@@ -20,6 +20,7 @@
     </style>
 
 
+
     <div class="container py-5 ">
         <h2 class="mb-4 text-center text-black">محصولات ما</h2>
 
@@ -29,6 +30,10 @@
                     <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
                         <div class="row">
                             @foreach ($productChunk as $product)
+                                @php
+                                    $discount_percent =
+                                        (($product->price - $product->discount_price) / $product->price) * 100;
+                                @endphp
                                 <div class="col-md-4">
                                     <div class="card mb-3 bg-dark shadow-sm">
                                         <div class="d-flex justify-content-center p-2">
@@ -37,16 +42,25 @@
                                         </div>
                                         <div class="card-body text-center">
                                             <h5 class="card-title text-white">{{ $product->name }}</h5>
-                                            <h6 class="product-price text-decoration-line-through">
-                                                {{ number_format($product->price) }} تومان</h6>
-                                            <p class="text-primary mb-4"> قیمت با تخفیف :
-                                                {{ number_format($product->discount_price) }} تومان
-                                                @if (!$product->count <= 0)
-                                                    <a href="{{ route('product.show', $product) }}"
-                                                        class="btn btn-primary">مشاهده</a>
+                                            @if (!$discount_percent <= 0)
+                                                <h6 class="product-price text-decoration-line-through">
+                                                    {{ number_format($product->price) }} تومان</h6>
+                                                <p class="text-primary mb-4"> قیمت با تخفیف :
+                                                    {{ number_format($product->discount_price) }} تومان
                                                 @else
-                                                    <button class="btn btn-secondary" disabled> اتمام موجودی </button>
-                                                @endif
+                                                 <p class="text-primary mb-4"></p>
+
+                                                <h6 class="product-price text-white">
+                                                    {{ number_format($product->price) }} تومان</h6>
+                                            @endif
+
+
+                                            @if (!$product->count <= 0)
+                                                <a href="{{ route('product.show', $product) }}"
+                                                    class="btn btn-primary">مشاهده</a>
+                                            @else
+                                                <button class="btn btn-secondary" disabled> اتمام موجودی </button>
+                                            @endif
 
                                         </div>
                                     </div>
