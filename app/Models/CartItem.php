@@ -31,4 +31,6 @@ class CartItem extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
+
+    
 }

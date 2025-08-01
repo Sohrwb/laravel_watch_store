@@ -20,8 +20,8 @@ class CreateInvoicesTable extends Migration
             // جمع مبلغ فاکتور
             $table->integer('total_price');
 
-            // وضعیت پرداخت: در انتظار یا پرداخت‌شده
-            $table->enum('status', ['pending', 'paid'])->default('pending');
+            // وضعیت پرداخت: در انتظار پرداخت  یا پرداخت‌شده
+            $table->enum('status', ['pending','paid'])->default('pending');
 
             // تاریخ و زمان پرداخت (فقط در صورت paid پر می‌شود)
             $table->timestamp('payment_date')->nullable();

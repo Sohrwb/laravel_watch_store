@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartItem;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +45,13 @@ class AuthController extends Controller
         $cartItems = CartItem::where('user_id', Auth::user()->id)
             ->whereNull('invoice_id')
             ->get();
-        return view('profile', compact('cartItems'));
+
+        $pendingInvoices = Invoice::where('user_id', Auth::user()->id)
+            ->where('status', 'pending')
+            ->get();
+
+     
+        return view('user.profile', compact('cartItems', 'pendingInvoices'));
     }
 
 

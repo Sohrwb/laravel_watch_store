@@ -97,6 +97,12 @@ class CartController extends Controller
     // لغو پرداخت
     public function cancelPayment($id)
     {
+        $invoice = Invoice::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        CartItem::where('user_id', Auth::id())->whereNull('invoice_id')->update([
+            'invoice_id' => $invoice->id,
+        ]);
+
         return redirect()->route('home')->with('info', 'پرداخت لغو شد.');
     }
 

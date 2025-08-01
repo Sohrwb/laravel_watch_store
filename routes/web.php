@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartItemController;
+
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -12,7 +15,6 @@ Route::get('/', [ProductController::class, 'home'])->name('home');
 Route::get('products/show/{product}', [ProductController::class, 'show'])->name('product.show');
 
 
-Route::get('/profile', [AuthController::class, 'profile'])->name('profile')->middleware('auth');
 
 //auth
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -29,7 +31,9 @@ Route::post('/forget', [AuthController::class, 'forgetpost'])->name('forgetpost'
 Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::post('/reset-password', [AuthController::class, 'resetPasswordPost'])->name('resetPassword.post');
 
-
+//profile
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile')->middleware('auth');
+Route::get('/user/invoices', [InvoiceController::class, 'index'])->name('user.invoices')->middleware('auth');
 
 //admin
 Route::middleware(['auth', 'is_admin'])->prefix('admin')->as('admin.')->group(function () {
@@ -41,6 +45,17 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->as('admin.')->group(fu
 });
 
 
+// حذف یک آیتم از سبد خرید
+Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy'])->name('cart-item.destroy');
+
+// فرم ویرایش یک آیتم از سبد خرید
+Route::get('/cart-items/{id}/edit', [CartItemController::class, 'edit'])->name('cart-item.edit');
+
+// ذخیره ویرایش آیتم
+Route::put('/cart-items/{id}', [CartItemController::class, 'update'])->name('cart-item.update');
+
+
+
 //invoice and cart
 Route::post('/cart/add', [CartController::class, 'addToCart'])->middleware('auth')->name('cart.edit');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->middleware('auth')->name('cart.delete');
@@ -50,3 +65,6 @@ Route::post('/cart/checkout', [CartController::class, 'checkout'])->middleware('
 Route::get('/payment/{id}', [CartController::class, 'showGateway'])->middleware('auth')->name('payment.gateway');
 Route::post('/payment/confirm/{id}', [CartController::class, 'confirmPayment'])->middleware('auth')->name('payment.confirm');
 Route::post('/payment/cancel/{id}', [CartController::class, 'cancelPayment'])->middleware('auth')->name('payment.cancel');
+
+Route::post('invoice/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoice.pay');
+Route::delete('invoice/{invoice}', [InvoiceController::class, 'destroy'])->name('invoice.destroy');
