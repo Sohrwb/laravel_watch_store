@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartItemController;
@@ -41,6 +42,8 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->as('admin.')->group(fu
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 });
 
+//category
+Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
 
 
 //cart

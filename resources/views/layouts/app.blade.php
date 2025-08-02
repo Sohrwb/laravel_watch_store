@@ -57,9 +57,13 @@
                             دسته‌بندی‌ها
                         </a>
                         <ul class="dropdown-menu text-end">
-                            <li><a class="dropdown-item" href="#">ساعت مردانه</a></li>
-                            <li><a class="dropdown-item" href="#">ساعت زنانه</a></li>
-                            <li><a class="dropdown-item" href="#">ساعت اسپرت</a></li>
+                            @php
+                                $categories = App\Models\Category::all();
+                            @endphp
+                            @foreach ($categories as $category)
+                                <li><a class="dropdown-item"
+                                        href="{{ route('category.show', $category) }}">{{ $category->name }}</a></li>
+                            @endforeach
                         </ul>
                     </li>
 

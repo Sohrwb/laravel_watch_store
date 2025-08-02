@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+
 
         DB::table('colors')->insert([
             [
@@ -59,10 +61,11 @@ class DatabaseSeeder extends Seeder
 
         ]);
 
+
         DB::table('products')->insert([
             [
                 'name' => 'ساعت دیجیتال مردانه',
-                'description'=> ' ساعت دیجیتال مردانه مدل خاص سری اول جلکسی دو',
+                'description' => ' ساعت دیجیتال مردانه مدل خاص سری اول جلکسی دو',
                 'image' => 'watch-1.jpg',
                 'category_id' => 2,
                 'size_id' => 2,
@@ -76,7 +79,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'ساعت  زنانه',
                 'image' => 'watch-2.jpg',
-                'description'=> ' ساعت دیجیتال زنانه مدل خانمانه دو',
+                'description' => ' ساعت دیجیتال زنانه مدل خانمانه دو',
                 'count' => 8,
                 'category_id' => 3,
                 'size_id' => 2,
@@ -87,5 +90,7 @@ class DatabaseSeeder extends Seeder
                 'discount_price' => 15000,
             ]
         ]);
+
+        Product::factory()->count(20)->create();
     }
 }
