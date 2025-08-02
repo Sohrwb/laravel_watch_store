@@ -11,10 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
-
 Route::get('products/show/{product}', [ProductController::class, 'show'])->name('product.show');
-
-
 
 //auth
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -45,26 +42,23 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->as('admin.')->group(fu
 });
 
 
-// حذف یک آیتم از سبد خرید
-Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy'])->name('cart-item.destroy');
 
-// فرم ویرایش یک آیتم از سبد خرید
-Route::get('/cart-items/{id}/edit', [CartItemController::class, 'edit'])->name('cart-item.edit');
-
-// ذخیره ویرایش آیتم
-Route::put('/cart-items/{id}', [CartItemController::class, 'update'])->name('cart-item.update');
-
-
-
-//invoice and cart
-Route::post('/cart/add', [CartController::class, 'addToCart'])->middleware('auth')->name('cart.edit');
-Route::post('/cart/add', [CartController::class, 'addToCart'])->middleware('auth')->name('cart.delete');
+//cart
 Route::post('/cart/add', [CartController::class, 'addToCart'])->middleware('auth')->name('cart.add');
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->middleware('auth')->name('cart.checkout');
 
+Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy'])->middleware('auth')->name('cart-item.destroy');
+Route::get('/cart-items/{id}/edit', [CartItemController::class, 'edit'])->middleware('auth')->name('cart-item.edit');
+Route::put('/cart-items/{id}', [CartItemController::class, 'update'])->middleware('auth')->name('cart-item.update');
+
+
+
+//payment
 Route::get('/payment/{id}', [CartController::class, 'showGateway'])->middleware('auth')->name('payment.gateway');
 Route::post('/payment/confirm/{id}', [CartController::class, 'confirmPayment'])->middleware('auth')->name('payment.confirm');
 Route::post('/payment/cancel/{id}', [CartController::class, 'cancelPayment'])->middleware('auth')->name('payment.cancel');
 
-Route::post('invoice/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoice.pay');
-Route::delete('invoice/{invoice}', [InvoiceController::class, 'destroy'])->name('invoice.destroy');
+//invoice
+
+Route::post('invoice/{invoice}/pay', [InvoiceController::class, 'pay'])->middleware('auth')->name('invoice.pay');
+Route::delete('invoice/{invoice}', [InvoiceController::class, 'destroy'])->middleware('auth')->name('invoice.destroy');

@@ -25,6 +25,11 @@ class CartController extends Controller
         $product = Product::findOrFail($request->product_id);
         $user = Auth::user();
 
+        if ($product->count < $request->count) {
+            return redirect()->back()->with('error', 'موجودی کافی نیست.');
+        }
+
+
         if ($product->discount_price <= 0) {
             $total = $product->price * $request->count;
         }
@@ -37,6 +42,9 @@ class CartController extends Controller
             'total_price' => $total,
             'invoice_id'  => null,
         ]);
+
+        $product->count -= $request->count;
+        $product->save();
 
         return back()->with('success', 'محصول به سبد خرید اضافه شد.');
     }
