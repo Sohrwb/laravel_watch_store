@@ -31,7 +31,7 @@
 </head>
 
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" >
 
 
 
@@ -141,7 +141,7 @@
         </div>
     @endif
     <!-- محتوای صفحات -->
-    <main class="container py-4 flex-grow-1">
+    <main class="container-fluid py-4 flex-grow-1">
 
         @yield('content')
     </main>

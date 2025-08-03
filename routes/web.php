@@ -15,6 +15,9 @@ Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::get('/about', [ProductController::class, 'about'])->name('about');
 
+Route::get('/search', [ProductController::class, 'search'])->name('search');
+
+Route::get('/products', [ProductController::class, 'filterProduct'])->name('products.index');
 Route::get('products/show/{product}', [ProductController::class, 'show'])->name('product.show');
 
 //auth

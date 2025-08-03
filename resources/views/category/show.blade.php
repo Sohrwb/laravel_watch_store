@@ -5,7 +5,7 @@
         <h1 class="mb-4">{{ $category->name }}</h1>
 
         <div class="row">
-            @foreach ($products as $product)
+            @forelse ($products as $product)
                 @php
                     $hasDiscount = $product->discount_percent > 0;
                     $finalPrice = $hasDiscount ? $product->price - ($product->price * $product->discount_percent / 100) : $product->price;
@@ -48,7 +48,12 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+
+            @empty
+                <div class="col-12">
+                    <p class="text-center">هیچ محصولی یافت نشد.</p>
+                </div>
+            @endforelse
         </div>
 
         <!-- دکمه‌های پیجینیشن با Bootstrap -->

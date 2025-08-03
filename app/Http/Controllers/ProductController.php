@@ -10,10 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 
+
 class ProductController extends Controller
 {
 
-        public function about()
+    public function about()
     {
         return view('about.about');
     }
@@ -22,8 +23,57 @@ class ProductController extends Controller
     {
         $products = Product::all();
         $categories = Category::all();
-        return view('home', compact('products', 'categories'));
+        $colors = Color::all();
+        $sizes = Size::all();
+
+        return view('home', compact('products', 'categories', 'sizes', 'colors'));
     }
+
+
+
+ 
+
+    public function filterProduct(Request $request)
+    {
+        $query = Product::query()->where('count', '>', 0);
+
+        // جستجو
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // فیلتر دسته‌بندی
+        if ($request->has('categories')) {
+            $query->whereIn('category_id', $request->categories);
+        }
+
+        // فیلتر رنگ
+        if ($request->has('colors')) {
+            $query->whereIn('color_id', $request->colors);
+        }
+
+        // فیلتر سایز
+        if ($request->has('sizes')) {
+            $query->whereIn('size_id', $request->sizes);
+        }
+
+        // فیلتر قیمت
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        $products = $query->get();
+
+        $categories = Category::all();
+        $colors = Color::all();
+        $sizes = Size::all();
+
+        return view('product.filtered', compact('products', 'categories', 'colors', 'sizes'));
+    }
+
 
 
 
