@@ -15,9 +15,10 @@ class ProductController extends Controller
     public function home()
     {
         $products = Product::all();
-      
+
         return view('home', compact('products'));
     }
+
 
 
     public function index()
@@ -31,7 +32,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return view('product.show', compact('product'));
+        $categories = Category::all();
+        $colors = Color::all();
+        $sizes = Size::all();
+        return view('product.show', compact(['product', 'sizes', 'colors', 'categories']));
     }
 
     public function edit($id)
@@ -56,8 +60,6 @@ class ProductController extends Controller
             'image' => 'nullable|image'
         ]);
 
-        $discount_price = $request->price - ($request->price * $request->discount_percent / 100);
-
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME); // فقط نام بدون پسوند
@@ -78,7 +80,7 @@ class ProductController extends Controller
             'size_id' => $request->size,
             'category_id' => $request->category,
             'price' => $request->price,
-            'discount_price' => $discount_price,
+            'discount_percent' => $request->discount_percent,
             'image' => $filename
         ]);
 
@@ -101,8 +103,6 @@ class ProductController extends Controller
             'category' => 'required|integer',
             'image' => 'nullable|image'
         ]);
-
-        $discount_price = $request->price - ($request->price * $request->discount_percent / 100);
 
         if ($request->hasFile('image')) {
 
@@ -132,7 +132,7 @@ class ProductController extends Controller
             'size_id' => $request->size,
             'category_id' => $request->category,
             'price' => $request->price,
-            'discount_price' => $discount_price,
+            'discount_percent' => $request->discount_percent,
             'image' => $filename
         ]);
 

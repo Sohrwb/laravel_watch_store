@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-
-use App\Models\Product;
 use App\Models\CartItem;
 use App\Models\Invoice;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
@@ -19,7 +18,7 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'count'   => 'required|integer|min:1',
+            'count' => 'required|integer|min:1',
         ]);
 
         $product = Product::findOrFail($request->product_id);
@@ -29,20 +28,23 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'موجودی کافی نیست.');
         }
 
-
-        if ($product->discount_price <= 0) {
-            $total = $product->price * $request->count;
+        // محاسبه قیمت با تخفیف (در صورت وجود تخفیف)
+        $discountedPrice = $product->price;
+        if ($product->discount_percent > 0) {
+            $discountedPrice = $product->price - ($product->price * $product->discount_percent / 100);
         }
-        $total = $product->discount_price * $request->count;
+
+        $total = $discountedPrice * $request->count;
 
         CartItem::create([
             'user_id'     => $user->id,
             'product_id'  => $product->id,
-            'count'    => $request->count,
+            'count'       => $request->count,
             'total_price' => $total,
             'invoice_id'  => null,
         ]);
 
+        // کاهش موجودی محصول
         $product->count -= $request->count;
         $product->save();
 
@@ -70,8 +72,6 @@ class CartController extends Controller
             'payment_date'   => null,
         ]);
 
-
-
         return redirect()->route('payment.gateway', $invoice->id);
     }
 
@@ -92,12 +92,9 @@ class CartController extends Controller
             'payment_date' => now(),
         ]);
 
-        $user = Auth::user();
-        $items = CartItem::where('user_id', $user->id)->whereNull('invoice_id')->get();
-
-        CartItem::where('user_id', Auth::id())->whereNull('invoice_id')->update([
-            'invoice_id' => $invoice->id,
-        ]);
+        CartItem::where('user_id', Auth::id())
+            ->whereNull('invoice_id')
+            ->update(['invoice_id' => $invoice->id]);
 
         return redirect()->route('profile', $invoice->id)->with('success', 'پرداخت با موفقیت انجام شد.');
     }
@@ -107,18 +104,31 @@ class CartController extends Controller
     {
         $invoice = Invoice::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
-        CartItem::where('user_id', Auth::id())->whereNull('invoice_id')->update([
-            'invoice_id' => $invoice->id,
-        ]);
+        CartItem::where('user_id', Auth::id())
+            ->whereNull('invoice_id')
+            ->update(['invoice_id' => $invoice->id]);
 
         return redirect()->route('home')->with('info', 'پرداخت لغو شد.');
     }
 
-    // تولید شماره فاکتور براساس تاریخ و ترتیب
+    // تولید شماره فاکتور بر اساس تاریخ و ترتیب
     private function generateInvoiceNumber()
     {
         $today = Carbon::now()->format('Ymd');
-        $countToday = Invoice::whereDate('created_at', Carbon::today())->count() + 1;
+
+        // پیدا کردن آخرین فاکتور ساخته شده امروز با شماره فاکتور
+        $lastInvoice = Invoice::whereDate('created_at', Carbon::today())
+            ->orderByDesc('created_at')
+            ->first();
+
+        if ($lastInvoice && preg_match('/-(\d+)$/', $lastInvoice->invoice_number, $matches)) {
+            // اگر شماره فاکتور مطابق الگو بود، عدد شمارنده را یک واحد افزایش بده
+            $countToday = (int) $matches[1] + 1;
+        } else {
+            // اولین فاکتور امروز
+            $countToday = 1;
+        }
+
         return $today . '-' . str_pad($countToday, 5, '0', STR_PAD_LEFT);
     }
 }

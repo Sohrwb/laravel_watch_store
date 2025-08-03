@@ -22,8 +22,8 @@ class ProductFactory extends Factory
             'category_id'     => Category::inRandomOrder()->first()->id ?? Category::factory(),
             'size_id'         => Size::inRandomOrder()->first()->id ?? Size::factory(),
             'color_id'        => Color::inRandomOrder()->first()->id ?? Color::factory(),
-            'price'           => $this->faker->numberBetween(100000, 500000),
-            'discount_price'  => $this->faker->numberBetween(0, 50000),
+            'price'           => $this->faker->numberBetween(1, 50) * 1000,
+            'discount_percent'  => $this->faker->numberBetween(0, 100),
         ];
     }
 }

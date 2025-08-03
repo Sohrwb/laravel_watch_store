@@ -16,7 +16,7 @@
     </style>
 
     @php
-        $discount_percent = (($product->price - $product->discount_price) / $product->price) * 100;
+        $discount_price = $product->price - ($product->price * $product->discount_percent) / 100;
     @endphp
 
     <div class="container my-5">
@@ -92,20 +92,21 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">قیمت اصلی</label>
+                                    <label class="form-label">قیمت اصلی (تومان)</label>
                                     <input type="number" name="price" class="form-control" value="{{ $product->price }}"
                                         required id="price">
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label">درصد تخفیف</label>
+                                    <label class="form-label">درصد تخفیف (%)</label>
                                     <input type="number" name="discount_percent" class="form-control"
-                                        value="{{ $discount_percent }}" required id="discount">
+                                        value="{{ $product->discount_percent }}" required id="discount">
                                 </div>
 
                                 <div class="col-md-4">
                                     <label class="form-label">قیمت با تخفیف</label>
-                                    <input type="number" class="form-control" id="discount_price" readonly>
+                                    <input type="text" class="form-control" id="discount_price"
+                                        value="{{ number_format($discount_price) }}" readonly>
                                 </div>
 
                                 <div class="col-md-6">
@@ -116,9 +117,7 @@
 
                                 <div class="col-12 text-end">
                                     <button type="submit" class="btn btn-success px-4">ذخیره تغییرات</button>
-
-                                    <a href="{{ route('admin.products.index') }}" class="btn btn-danger"> برگشت </a>
-
+                                    <a href="{{ route('admin.products.index') }}" class="btn btn-danger">برگشت</a>
                                 </div>
                             </form>
                         </div>
@@ -133,9 +132,9 @@
     <script>
         function calculateDiscountPrice() {
             const price = parseFloat(document.getElementById('price').value) || 0;
-            const discount = parseFloat(document.getElementById('discount').value) || 0;
-            const discountedPrice = price - (price * discount / 100);
-            document.getElementById('discount_price').value = discountedPrice.toFixed(0);
+            const percent = parseFloat(document.getElementById('discount').value) || 0;
+            const discountedPrice = price - (price * percent / 100);
+            document.getElementById('discount_price').value = discountedPrice.toLocaleString('fa-IR');
         }
 
         document.getElementById('price').addEventListener('input', calculateDiscountPrice);

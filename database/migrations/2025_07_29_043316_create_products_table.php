@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('size_id')->constrained()->onDelete('cascade');
             $table->foreignId('color_id')->constrained()->onDelete('cascade');
             $table->integer('price');
-            $table->integer('discount_price')->default(0);
+            $table->integer('discount_percent')->default(0);
             $table->timestamps();
         });
     }

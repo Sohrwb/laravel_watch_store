@@ -9,7 +9,7 @@
             @csrf
             <div class="col-md-4">
                 <label>نام محصول</label>
-                <input type="text" name="name" class="form-control" value="{{old('name')}}" required>
+                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
             </div>
 
             <div class="col-md-2">
@@ -23,7 +23,7 @@
 
             <div class="col-md-6">
                 <label>توضیحات</label>
-                <textarea name="description" class="form-control" value="{{old('description')}}" required></textarea>
+                <textarea name="description" class="form-control" value="{{ old('description') }}" required></textarea>
             </div>
 
 
@@ -53,12 +53,14 @@
 
             <div class="col-md-3">
                 <label>قیمت اصلی</label>
-                <input type="number" name="price" class="form-control" value="{{old('price')}}" required id="price">
+                <input type="number" name="price" class="form-control" value="{{ old('price') }}" required
+                    id="price">
             </div>
 
             <div class="col-md-3">
                 <label>درصد تخفیف</label>
-                <input type="number" name="discount_percent" class="form-control" value="{{old('discount_percent')}}" required id="discount">
+                <input type="number" name="discount_percent" class="form-control" value="{{ old('discount_percent') }}"
+                    required id="discount">
             </div>
 
             <div class="col-md-3">
@@ -68,7 +70,7 @@
 
             <div class="col-md-3">
                 <label>تعداد</label>
-                <input type="number" name="count" class="form-control" value="{{old('count')}}" required>
+                <input type="number" name="count" class="form-control" value="{{ old('count') }}" required>
             </div>
 
             <div class="col-12">
@@ -88,10 +90,13 @@
             </thead>
             <tbody>
                 @foreach ($products as $product)
+                    @php
+                        $final_price = $product->price - ($product->price * $product->discount_percent) / 100;
+                    @endphp
                     <tr>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->count }}</td>
-                        <td>{{ number_format($product->discount_price) }} تومان</td>
+                        <td>{{ number_format($final_price) }} تومان</td>
                         <td>
                             <a href="{{ route('admin.products.edit', $product->id) }}"
                                 class="btn btn-sm btn-primary">ویرایش</a>

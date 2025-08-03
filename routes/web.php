@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::get('products/show/{product}', [ProductController::class, 'show'])->name('product.show');
+Route::post('/check-availability', [ProductController::class, 'checkAvailability'])->name('products.check');
 
 //auth
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -65,3 +66,5 @@ Route::post('/payment/cancel/{id}', [CartController::class, 'cancelPayment'])->m
 
 Route::post('invoice/{invoice}/pay', [InvoiceController::class, 'pay'])->middleware('auth')->name('invoice.pay');
 Route::delete('invoice/{invoice}', [InvoiceController::class, 'destroy'])->middleware('auth')->name('invoice.destroy');
+
+

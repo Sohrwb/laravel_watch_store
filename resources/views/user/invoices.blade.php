@@ -13,19 +13,17 @@
 
                 <div class="accordion-item mb-2">
                     <h2 class="accordion-header" id="heading{{ $invoice->id }}">
-                        <button class="accordion-button collapsed {{ $statusClass }}" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapse{{ $invoice->id }}" aria-expanded="false"
-                            aria-controls="collapse{{ $invoice->id }}">
+                        <button class="accordion-button collapsed {{ $statusClass }}" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#collapse{{ $invoice->id }}"
+                            aria-expanded="false" aria-controls="collapse{{ $invoice->id }}">
                             فاکتور شماره: {{ $invoice->invoice_number }}
                             - تاریخ: {{ $invoice->created_at->format('Y-m-d') }}
-                            - وضعیت: {{ $invoice->status === 'paid' ? 'پرداخت شده' : ' ناموفق بوده' }}
+                            - وضعیت: {{ $invoice->status === 'paid' ? 'پرداخت شده' : 'ناموفق بوده' }}
 
-
-                        <span class="mx-auto text-black">
-                            جمع کل: {{ number_format($invoice->total_price) }} تومان
-                        </span>
+                            <span class="mx-auto text-black">
+                                جمع کل: {{ number_format($invoice->total_price) }} تومان
+                            </span>
                         </button>
-
                     </h2>
 
                     <div id="collapse{{ $invoice->id }}" class="accordion-collapse collapse"
@@ -36,16 +34,23 @@
                                     <tr>
                                         <th>نام محصول</th>
                                         <th>تعداد</th>
-
+                                        <th>قیمت واحد (بعد تخفیف)</th>
                                         <th>قیمت کل</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($invoice->cartItems as $item)
+                                        @php
+                                            $price = $item->product->price;
+                                            $discount = $item->product->discount_percent ?? 0;
+                                            $finalPrice = $price - ($price * $discount / 100);
+                                            $total = $finalPrice * $item->count;
+                                        @endphp
                                         <tr>
                                             <td>{{ $item->product->name }}</td>
                                             <td>{{ $item->count }}</td>
-                                            <td>{{ number_format($item->total_price) }} تومان</td>
+                                            <td>{{ number_format($finalPrice) }} تومان</td>
+                                            <td>{{ number_format($total) }} تومان</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

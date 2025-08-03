@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
                 'price' => 25000,
                 'count' => 10,
-                'discount_price' => 2000,
+                'discount_percent' => 20,
             ],
             [
                 'name' => 'ساعت  زنانه',
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
                 'price' => 60000,
-                'discount_price' => 15000,
+                  'discount_percent' => 50,
             ]
         ]);
 

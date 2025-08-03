@@ -2,15 +2,20 @@
 
 @section('content')
     <div class="container">
-
         <div class="border bg-white shadow-lg rounded p-2 m-1 ">
+            <a href="{{ route('user.invoices') }}" class="btn btn-primary">فاکتور های من</a>
 
-
-            <a href="{{route('user.invoices')}}" class="btn btn-primary">فاکتور های من</a>
-
-            {{-- 🛒 سبد خرید --}}
             <h4 class="mb-3">سبد خرید شما</h4>
+            @php $cartTotal = 0; @endphp
             @forelse($cartItems as $item)
+                @php
+                    $price = $item->product->price;
+                    $discountPercent = $item->product->discount_percent ?? 0;
+                    $finalPrice = $discountPercent > 0 ? $price - ($price * $discountPercent) / 100 : $price;
+                    $itemTotal = $finalPrice * $item->count;
+                    $cartTotal += $itemTotal;
+                @endphp
+
                 <div class="d-flex align-items-center border rounded p-2 mb-2 shadow-sm bg-light">
                     {{-- تصویر محصول --}}
                     <img src="{{ asset('images/products/' . $item->product->image) }}" alt="{{ $item->product->name }}"
@@ -19,8 +24,11 @@
                     {{-- اطلاعات محصول --}}
                     <div class="flex-grow-1">
                         <h6 class="mb-1">{{ $item->product->name }}</h6>
-                        <div>تعداد: {{ $item->count }} | قیمت واحد: {{ number_format($item->product->discount_price) }}
-                            تومان</div>
+                        <div>
+                            تعداد: {{ $item->count }} |
+                            قیمت واحد:
+                            {{ number_format($finalPrice) }} تومان
+                        </div>
                     </div>
 
                     {{-- دکمه‌ها --}}
@@ -32,16 +40,9 @@
                         </form>
                     </div>
                 </div>
-                @php
-                    $cartTotal = $cartItems->sum(function ($item) {
-                        return $item->count * $item->product->discount_price;
-                    });
-                @endphp
             @empty
                 <p>سبد خرید شما خالی است.</p>
             @endforelse
-
-
 
             @if ($cartItems->count())
                 <div class="text-first fw-bold mt-3">
@@ -53,8 +54,8 @@
                     <button class="btn btn-success">پرداخت سبد خرید</button>
                 </form>
             @endif
-
         </div>
+
         <hr class="my-5">
 
         {{-- 📄 فاکتورهای در انتظار پرداخت --}}
@@ -70,6 +71,13 @@
                 </div>
                 <div class="card-body">
                     @foreach ($invoice->cartItems as $item)
+                        @php
+                            $price = $item->product->price;
+                            $discountPercent = $item->product->discount_percent ?? 0;
+                            $finalPrice = $discountPercent > 0 ? $price - ($price * $discountPercent) / 100 : $price;
+                            $itemTotal = $finalPrice * $item->count;
+                        @endphp
+
                         <div class="d-flex align-items-center border rounded p-2 mb-2 bg-white">
                             <img src="{{ asset('images/products/' . $item->product->image) }}"
                                 alt="{{ $item->product->name }}" style="width: 60px; height: 60px; object-fit: cover;"
@@ -78,7 +86,7 @@
                             <div>
                                 <div class="fw-bold">{{ $item->product->name }}</div>
                                 <div>تعداد: {{ $item->count }} | قیمت کل:
-                                    {{ number_format($item->count * $item->product->discount_price) }} تومان</div>
+                                    {{ number_format($itemTotal) }} تومان</div>
                             </div>
                         </div>
                     @endforeach
@@ -97,6 +105,5 @@
         @empty
             <p>هیچ فاکتور در انتظاری وجود ندارد.</p>
         @endforelse
-
     </div>
 @endsection
