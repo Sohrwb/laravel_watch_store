@@ -12,7 +12,13 @@
                 @endphp
 
                 <div class="col-md-3 mb-4">
-                    <div class="card h-100">
+                    <div class="card h-100 position-relative">
+                        @if ($hasDiscount)
+                            <span class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-bottom-end discount-badge">
+                                {{ $product->discount_percent }}٪ تخفیف
+                            </span>
+                        @endif
+
                         <img src="{{ asset('images/products/' . $product->image) }}" class="card-img-top"
                             alt="{{ $product->name }}">
                         <div class="card-body">
@@ -25,7 +31,6 @@
                                 <p class="text-success mb-1">
                                     قیمت با تخفیف: {{ number_format($finalPrice) }} تومان
                                 </p>
-                                <p class="text-muted small">({{ $product->discount_percent }}٪ تخفیف)</p>
                             @else
                                 <p class="text-primary">
                                     {{ number_format($product->price) }} تومان
@@ -51,4 +56,11 @@
             {{ $products->links('pagination::bootstrap-5') }}
         </div>
     </div>
+
+    <style>
+        .discount-badge {
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+    </style>
 @endsection
