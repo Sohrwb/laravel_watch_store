@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+
+        public function about()
+    {
+        return view('about.about');
+    }
+
     public function home()
     {
         $products = Product::all();

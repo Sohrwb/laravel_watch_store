@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ColorController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartItemController;
@@ -12,8 +13,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
+Route::get('/about', [ProductController::class, 'about'])->name('about');
+
 Route::get('products/show/{product}', [ProductController::class, 'show'])->name('product.show');
-Route::post('/check-availability', [ProductController::class, 'checkAvailability'])->name('products.check');
 
 //auth
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -41,6 +43,8 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->as('admin.')->group(fu
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::post('/colors', [ColorController::class, 'store'])->name('colors.store');
 });
 
 //category
@@ -66,5 +70,3 @@ Route::post('/payment/cancel/{id}', [CartController::class, 'cancelPayment'])->m
 
 Route::post('invoice/{invoice}/pay', [InvoiceController::class, 'pay'])->middleware('auth')->name('invoice.pay');
 Route::delete('invoice/{invoice}', [InvoiceController::class, 'destroy'])->middleware('auth')->name('invoice.destroy');
-
-

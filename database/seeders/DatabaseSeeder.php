@@ -91,6 +91,6 @@ class DatabaseSeeder extends Seeder
             ]
         ]);
 
-        Product::factory()->count(20)->create();
+        Product::factory()->count(60)->create();
     }
 }

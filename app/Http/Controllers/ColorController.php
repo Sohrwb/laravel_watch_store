@@ -4,18 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Product;
 
-class CategoryController extends Controller
+class ColorController extends Controller
 {
-    public function show(Category $category)
-    {
-        $products = Product::where('category_id', $category->id)
-            ->where('count', '>', 0) // فقط محصولات موجود
-            ->paginate(12); // 12 محصول در هر صفحه
-
-        return view('category.show', compact('category', 'products'));
-    }
 
     public function store(Request $request)
     {
@@ -23,7 +16,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
-        Category::create([
+        Color::create([
             'name' => $request->name,
         ]);
 

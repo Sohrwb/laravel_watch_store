@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Color extends Model
 {
+    protected $guarded = [];
+
+    public $timestamps = false;
+
 
     use HasFactory;
 }

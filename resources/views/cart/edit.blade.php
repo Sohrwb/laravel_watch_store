@@ -28,7 +28,7 @@
 
             <div class="mb-3">
                 <label>تعداد</label>
-                <input type="number" name="count" class="form-control" value="{{ $item->count }}" min="1">
+                <input type="number" name="count" class="form-control w-25" value="{{ $item->count }}" min="1">
             </div>
 
             <button type="submit" class="btn btn-primary">ذخیره</button>
