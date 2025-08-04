@@ -9,14 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class CartItemController extends Controller
 {
-    // نمایش فرم ویرایش
+    //-----------------------------------------[  نمایش فرم ویرایش  ]-----------------------------------------------
+
     public function edit($id)
     {
         $item = CartItem::with('product')->where('user_id', Auth::id())->findOrFail($id);
         return view('cart.edit', compact('item'));
     }
 
-    // ذخیره تغییرات
+    //-----------------------------------------[  ذخیره تغییرات  ]-----------------------------------------------
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -41,7 +43,8 @@ class CartItemController extends Controller
         return redirect()->route('profile')->with('success', 'آیتم با موفقیت ویرایش شد.');
     }
 
-    // حذف آیتم
+    //-----------------------------------------[  حذف آیتم  ]-----------------------------------------------
+
     public function destroy($id)
     {
         $item = CartItem::where('user_id', Auth::id())->findOrFail($id);

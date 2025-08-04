@@ -17,9 +17,9 @@
                 <hr>
                 <h5 class="text-primary">اطلاعات تماس</h5>
                 <ul class="list-unstyled">
-                    <li><i class="bi bi-telephone-fill me-2"></i> 021-12345678</li>
+                    <li><i class="bi bi-telephone-fill me-2"></i> 0123456789</li>
                     <li><i class="bi bi-envelope-fill me-2"></i> info@example.com</li>
-                    <li><i class="bi bi-geo-alt-fill me-2"></i> تهران، خیابان ولیعصر، پلاک 100</li>
+                    <li><i class="bi bi-geo-alt-fill me-2"></i> تهران، خیابان میمند پلاک 100</li>
                 </ul>
             </div>
         </div>

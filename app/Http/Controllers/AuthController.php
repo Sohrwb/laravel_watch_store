@@ -14,14 +14,16 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    // نمایش فرم ثبت‌نام
+
+//-----------------------------------------[  نمایش فرم ثبت‌ نام  ]-----------------------------------------------
     public function showRegisterForm()
     {
         return view('auth.register');
     }
 
-    // پردازش ثبت‌نام
-    public function register(Request $request)
+//-----------------------------------------[  پردازش ثبت‌ نام  ]-----------------------------------------------
+
+public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -38,7 +40,7 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'ثبت‌نام با موفقیت انجام شد. لطفاً وارد شوید.');
     }
 
-    // نمایش پروفایل
+//-----------------------------------------[   نمایش پروفایل  ]-----------------------------------------------
 
     public function profile()
     {
@@ -50,18 +52,19 @@ class AuthController extends Controller
             ->where('status', 'pending')
             ->get();
 
-     
+
         return view('user.profile', compact('cartItems', 'pendingInvoices'));
     }
 
+//-----------------------------------------[  نمایش فرم ورود  ]-----------------------------------------------
 
-    // نمایش فرم ورود
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // پردازش ورود
+//-----------------------------------------[   پردازش ورود  ]-----------------------------------------------
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -79,7 +82,8 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    // خروج از حساب
+//-----------------------------------------[  خروج از حساب  ]-----------------------------------------------
+
     public function logout(Request $request)
     {
         Auth::logout();
@@ -88,15 +92,14 @@ class AuthController extends Controller
         return redirect('/')->with('success', 'با موفقیت خارج شدید.');
     }
 
-
-    // نمایش فرم فراموشی رمز عبور
+//-----------------------------------------[  نمایش فرم فراموشی رمز عبور  ]-----------------------------------------------
 
     public function forget()
     {
         return view('auth.forget');
     }
 
-    // دریافت ایمیل ورودی و ارسال ایمیل فراموشی
+//-----------------------------------------[   دریافت ایمیل ورودی و ارسال ایمیل فراموشی  ]-----------------------------------------------
 
     public function forgetpost(Request $request)
     {
@@ -123,8 +126,7 @@ class AuthController extends Controller
         return redirect()->back()->with('success', 'email was send');
     }
 
-
-    // نمایش فرم تغییر پسورد
+//-----------------------------------------[  نمایش فرم تغییر پسورد  ]-----------------------------------------------
 
     public function resetPassword($token)
     {
@@ -133,7 +135,8 @@ class AuthController extends Controller
     }
 
 
-    // تغییر رمز ورود
+//-----------------------------------------[  تغییر رمز ورود  ]-----------------------------------------------
+
     public function resetPasswordPost(Request $request)
     {
         $request->validate([

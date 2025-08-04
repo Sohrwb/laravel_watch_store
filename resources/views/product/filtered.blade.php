@@ -13,7 +13,7 @@
 
             {{-- Product List --}}
             <div class="col-md-9">
-                <div class="row"> <!-- اضافه کردن این ردیف -->
+                <div class="row">
                     {{-- نمایش محصولات فیلترشده --}}
                     @forelse ($products as $product)
                         @php
@@ -23,7 +23,7 @@
                                 : $product->price;
                         @endphp
 
-                        <div class="col-md-3 mb-4"> <!-- این کلاس صحیح است -->
+                        <div class="col-md-3 mb-4">
                             <div class="card h-100">
                                 @if ($hasDiscount)
                                     <span class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 rounded-bottom-end discount-badge">
@@ -65,7 +65,7 @@
                             <p class="text-center">هیچ محصولی یافت نشد.</p>
                         </div>
                     @endforelse
-                </div> <!-- بستن ردیف -->
+                </div> 
             </div>
         </div>
     </div>

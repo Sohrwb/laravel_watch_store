@@ -12,7 +12,6 @@ class IsAdmin
         $user = Auth::user();
 
         if (!$user || !$user->is_admin) {
-            // اگر کاربر لاگین نکرده یا ادمین نیست
             abort(403, 'دسترسی غیرمجاز.');
         }
 

@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    // افزودن محصول به سبد خرید
+    //-----------------------------------------[  افزودن محصول به سبد خرید  ]-----------------------------------------------
+
     public function addToCart(Request $request)
     {
         $request->validate([
@@ -28,12 +29,10 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'موجودی کافی نیست.');
         }
 
-        // محاسبه قیمت با تخفیف (در صورت وجود تخفیف)
         $discountedPrice = $product->price;
         if ($product->discount_percent > 0) {
             $discountedPrice = $product->price - ($product->price * $product->discount_percent / 100);
         }
-
         $total = $discountedPrice * $request->count;
 
         CartItem::create([
@@ -44,14 +43,15 @@ class CartController extends Controller
             'invoice_id'  => null,
         ]);
 
-        // کاهش موجودی محصول
         $product->count -= $request->count;
         $product->save();
 
         return back()->with('success', 'محصول به سبد خرید اضافه شد.');
     }
 
-    // ساخت فاکتور و هدایت به درگاه فرضی
+
+    //-----------------------------------------[  ساخت فاکتور و هدایت به درگاه فرضی  ]-----------------------------------------------
+
     public function checkout()
     {
         $user = Auth::user();
@@ -62,6 +62,8 @@ class CartController extends Controller
         }
 
         $total = $items->sum('total_price');
+
+        //              ---[  ساخت شماره فاکتور  ]---
         $invoiceNumber = $this->generateInvoiceNumber();
 
         $invoice = Invoice::create([
@@ -75,14 +77,17 @@ class CartController extends Controller
         return redirect()->route('payment.gateway', $invoice->id);
     }
 
-    // نمایش درگاه فرضی
+
+    //-----------------------------------------[  نمایش درگاه فرضی  ]-----------------------------------------------
+
     public function showGateway($id)
     {
         $invoice = Invoice::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         return view('payment_gateway', compact('invoice'));
     }
 
-    // تأیید پرداخت
+    //-----------------------------------------[  تأیید پرداخت  ]-----------------------------------------------
+
     public function confirmPayment($id)
     {
         $invoice = Invoice::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -99,7 +104,8 @@ class CartController extends Controller
         return redirect()->route('profile', $invoice->id)->with('success', 'پرداخت با موفقیت انجام شد.');
     }
 
-    // لغو پرداخت
+    //-----------------------------------------[  لغو پرداخت  ]-----------------------------------------------
+
     public function cancelPayment($id)
     {
         $invoice = Invoice::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
@@ -111,21 +117,18 @@ class CartController extends Controller
         return redirect()->route('home')->with('info', 'پرداخت لغو شد.');
     }
 
-    // تولید شماره فاکتور بر اساس تاریخ و ترتیب
+    //-----------------------------------------[  تولید شماره فاکتور بر اساس تاریخ و ترتیب  ]-----------------------------------------------
+
     private function generateInvoiceNumber()
     {
         $today = Carbon::now()->format('Ymd');
-
-        // پیدا کردن آخرین فاکتور ساخته شده امروز با شماره فاکتور
         $lastInvoice = Invoice::whereDate('created_at', Carbon::today())
             ->orderByDesc('created_at')
             ->first();
 
         if ($lastInvoice && preg_match('/-(\d+)$/', $lastInvoice->invoice_number, $matches)) {
-            // اگر شماره فاکتور مطابق الگو بود، عدد شمارنده را یک واحد افزایش بده
             $countToday = (int) $matches[1] + 1;
         } else {
-            // اولین فاکتور امروز
             $countToday = 1;
         }
 

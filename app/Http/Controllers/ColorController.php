@@ -9,6 +9,7 @@ use App\Models\Product;
 
 class ColorController extends Controller
 {
+    //-----------------------------------------[   افزودن رنگ  ]-----------------------------------------------
 
     public function store(Request $request)
     {

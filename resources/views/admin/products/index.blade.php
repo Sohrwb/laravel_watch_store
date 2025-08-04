@@ -4,7 +4,6 @@
     <div class="container bg-secondary p-2 border rounded">
         <h2>مدیریت محصولات</h2>
 
-        {{-- دکمه‌های افزودن سریع با Modal --}}
         <div class="mb-3 d-flex justify-content-end gap-2">
             <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                 افزودن دسته‌بندی
@@ -14,7 +13,7 @@
             </button>
         </div>
 
-        {{-- فرم افزودن محصول --}}
+
         <form method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data" class="row g-3 mb-5">
             @csrf
             <div class="col-md-4">

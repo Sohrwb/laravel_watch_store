@@ -56,7 +56,6 @@
             @endforelse
         </div>
 
-        <!-- دکمه‌های پیجینیشن با Bootstrap -->
         <div class="d-flex justify-content-center mt-4">
             {{ $products->links('pagination::bootstrap-5') }}
         </div>

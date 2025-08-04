@@ -7,7 +7,8 @@ use App\Models\Invoice;
 
 class InvoiceController extends Controller
 {
-    // لیست فاکتورهای کاربر
+    //-----------------------------------------[   لیست فاکتورهای کاربر  ]-----------------------------------------------
+
     public function index()
     {
         $invoices = Invoice::with(['cartItems.product'])
@@ -18,7 +19,8 @@ class InvoiceController extends Controller
         return view('user.invoices', compact('invoices'));
     }
 
-    // حذف فاکتور در انتظار پرداخت
+    //-----------------------------------------[  حذف فاکتور در انتظار پرداخت  ]-----------------------------------------------
+
     public function destroy($id)
     {
         $invoice = Invoice::with('cartItems.product')
@@ -26,16 +28,15 @@ class InvoiceController extends Controller
             ->where('status', 'pending')
             ->findOrFail($id);
 
-        // بازگرداندن موجودی محصولات و حذف آیتم‌ها
         foreach ($invoice->cartItems as $item) {
             if ($item->product) {
                 $item->product->increment('count', $item->count);
             }
 
-            $item->delete(); // حذف آیتم سبد خرید
+            $item->delete();
         }
 
-        $invoice->delete(); // حذف فاکتور
+        $invoice->delete(); 
 
         return redirect()->back()->with('success', '✅ فاکتور حذف شد و موجودی محصولات بازگردانده شد.');
     }

@@ -13,11 +13,14 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    //---------------------------------------[  صفحه درباره ما  ]-----------------------------------------------
 
     public function about()
     {
         return view('about.about');
     }
+
+    //---------------------------------------[  صفحه اصلی  ]-----------------------------------------------
 
     public function home()
     {
@@ -29,9 +32,17 @@ class ProductController extends Controller
         return view('home', compact('products', 'categories', 'sizes', 'colors'));
     }
 
+    //---------------------------------------[  صفحه نشان دادن محصول  ]-----------------------------------------------
 
+    public function show(Product $product)
+    {
+        $categories = Category::all();
+        $colors = Color::all();
+        $sizes = Size::all();
+        return view('product.show', compact(['product', 'sizes', 'colors', 'categories']));
+    }
 
- 
+    //---------------------------------------[  فیلتر کردن محصوول با ساید بار  ]-----------------------------------------------
 
     public function filterProduct(Request $request)
     {
@@ -74,8 +85,7 @@ class ProductController extends Controller
         return view('product.filtered', compact('products', 'categories', 'colors', 'sizes'));
     }
 
-
-
+    //---------------/  ADMIN  /-------------[  صفحه اصلی محصولات   ]-----------------------------------------------
 
     public function index()
     {
@@ -86,13 +96,7 @@ class ProductController extends Controller
         return view('admin.products.index', compact(['products', 'sizes', 'colors', 'categories']));
     }
 
-    public function show(Product $product)
-    {
-        $categories = Category::all();
-        $colors = Color::all();
-        $sizes = Size::all();
-        return view('product.show', compact(['product', 'sizes', 'colors', 'categories']));
-    }
+    //--------------/  ADMIN  /--------------[  ویرایش محصول  ]-----------------------------------------------
 
     public function edit($id)
     {
@@ -102,6 +106,9 @@ class ProductController extends Controller
         $sizes = Size::all();
         return view('admin.products.edit', compact(['product', 'sizes', 'colors', 'categories']));
     }
+
+    //--------------/  ADMIN  /--------------[  اضافه کردن محصول  ]-----------------------------------------------
+
     public function store(Request $request)
     {
         $request->validate([
@@ -118,9 +125,9 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME); // فقط نام بدون پسوند
-            $extension = $image->getClientOriginalExtension(); // پسوند فایل
-            $filename = $originalName . '_' . time() . '.' . $extension; // مثلاً: product_1722279420.jpg
+            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $image->getClientOriginalExtension();
+            $filename = $originalName . '_' . time() . '.' . $extension;
 
             $request->file('image')->move(public_path('images/products'), $filename);
         } else {
@@ -143,6 +150,7 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'محصول با موفقیت اضافه شد.');
     }
 
+    //--------------/  ADMIN  /--------------[  اپدیت کردن محصول  ]-----------------------------------------------
 
     public function update(Request $request, $id)
     {
@@ -165,8 +173,6 @@ class ProductController extends Controller
             if ($product->image && file_exists(public_path('images/products' . $product->image))) {
                 unlink(public_path('images/products' . $product->image));
             }
-
-            // به‌روزرسانی رکورد با عکس جدید
 
             $image = $request->file('image');
             $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME); // فقط نام بدون پسوند
@@ -195,6 +201,7 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'تغییرات با موفقیت اعمال شد.');
     }
 
+    //--------------/  ADMIN  /--------------[  حذف محصول  ]-----------------------------------------------
 
     public function destroy($id)
     {

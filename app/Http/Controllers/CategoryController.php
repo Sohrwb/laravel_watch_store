@@ -8,6 +8,8 @@ use App\Models\Product;
 
 class CategoryController extends Controller
 {
+    //-----------------------------------------[  نمایش صفحه کتگوری مدنظر  ]-----------------------------------------------
+
     public function show(Category $category)
     {
         $products = Product::where('category_id', $category->id)
@@ -16,6 +18,9 @@ class CategoryController extends Controller
 
         return view('category.show', compact('category', 'products'));
     }
+
+
+    //-----------------------------------------[  افزودن کتگوری  ]-----------------------------------------------
 
     public function store(Request $request)
     {
